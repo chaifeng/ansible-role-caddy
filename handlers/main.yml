@@ -1,0 +1,6 @@
+- name: Restart caddy server
+  #systemd: name=caddy state=restarted daemon_reload=yes
+  shell: |
+    systemctl daemon-reload
+    systemctl enable caddy.service
+    systemctl restart caddy.service

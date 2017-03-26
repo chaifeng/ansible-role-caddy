@@ -1,0 +1,57 @@
+- name: Ensure www-data group
+  group: gid=33 name="www-data"
+
+- name: Ensure www-data user
+  user: name="www-data" uid=33 home=/var/www createhome=no password="*" shell=/usr/sbin/nologin
+
+- name: Ensure caddy home directory
+  file: path="{{ caddy_home }}" state=directory
+
+- name: Download caddy server
+  unarchive: >
+    copy=no src="{{ caddy_download_url }}" dest="{{ caddy_home }}"
+    owner=root group=root
+    creates="{{ caddy_home }}/caddy"
+
+- name: Ensure caddy
+  shell: |
+    set -xe
+    chmod +x "{{ caddy_home }}/caddy"
+    setcap 'cap_net_bind_service=+ep' "{{ caddy_home }}/caddy"
+    ln -sf "{{ caddy_home }}/caddy" "{{ caddy_bin }}"
+    ln -sf "{{ caddy_home }}/caddy" "{{ caddy_bin }}-{{ caddy_version }}"
+  args:
+    creates: "{{ caddy_bin }}-{{ caddy_version }}"
+  notify: Restart caddy server
+
+- name: Ensure caddy etc directory
+  file: path="{{ caddy_etc_dir }}" state=directory group="{{ caddy_group }}" mode=0750
+
+- name: Ensure caddy etc sites directory
+  file: path="{{ caddy_etc_dir }}/sites" state=directory group="{{ caddy_group }}" mode=0750
+
+- name: Ensure caddy ssl dir
+  file: path="{{ caddy_ssl_dir }}" state=directory owner="{{ caddy_user }}" group=root mode=0750
+
+- name: Ensure site root
+  file: path="{{ caddy_site_root }}" state=directory owner="{{ caddy_user }}" group="{{ caddy_group }}" mode=0750
+  when: caddy_site_root
+
+- name: Ensure default empty site root
+  file: path="/var/empty" state=directory owner="{{ caddy_user }}" group="{{ caddy_group }}" mode=0750
+
+- name: Ensure site log dir
+  file: path="{{ caddy_site_logdir }}" state=directory owner="{{ caddy_user }}" group="{{ caddy_group }}" mode=0750
+
+- name: Caddyfile
+  template: src=Caddyfile.j2 dest="{{ caddy_etc_dir }}/Caddyfile" group="{{ caddy_group }}" mode=0444
+
+- name: Caddy systemd file
+  shell: |
+    cp "{{ caddy_home }}/init/linux-systemd/caddy.service" /etc/systemd/system/caddy.service
+    chown root:root /etc/systemd/system/caddy.service
+    chmod +x /etc/systemd/system/caddy.service
+  args:
+    creates: /etc/systemd/system/caddy.service
+  notify: Restart caddy server
+

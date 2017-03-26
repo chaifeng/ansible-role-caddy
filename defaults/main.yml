@@ -1,0 +1,13 @@
+caddy_version: 0.9.5
+caddy_bin: /usr/local/bin/caddy
+caddy_home: /opt/caddyserver-{{ caddy_version }}
+caddy_etc_dir: /etc/caddy
+caddy_ssl_dir: /etc/ssl/caddy
+caddy_conf: "{{ caddy_etc_dir }}/Caddyfile"
+caddy_user: www-data
+caddy_group: www-data
+caddy_download_url: "https://caddyserver.com/download/build?os=linux&arch=amd64&features=DNS%2Ccors%2Cexpires%2Cgit%2Cjsonp%2Clocale%2Cminify%2Cratelimit%2Crealip%2Cdigitalocean%2Cgooglecloud%2Clinode%2Cvultr"
+caddy_site_domain: localhost
+caddy_site_root: null
+caddy_site_backend: null
+caddy_site_logdir: "/var/log/caddy"
