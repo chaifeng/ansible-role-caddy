@@ -47,11 +47,9 @@
   template: src=Caddyfile.j2 dest="{{ caddy_etc_dir }}/Caddyfile" group="{{ caddy_group }}" mode=0444
 
 - name: Caddy systemd file
-  shell: |
-    cp "{{ caddy_home }}/init/linux-systemd/caddy.service" /etc/systemd/system/caddy.service
-    chown root:root /etc/systemd/system/caddy.service
-    chmod +x /etc/systemd/system/caddy.service
-  args:
-    creates: /etc/systemd/system/caddy.service
+  copy: >
+    remote_src=yes src="{{ caddy_home }}/init/linux-systemd/caddy.service"
+    dest=/etc/systemd/system/caddy.service
+    owner=root group=root mode=0644
   notify: Restart caddy server
 
