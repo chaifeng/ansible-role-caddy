@@ -31,20 +31,20 @@
   file: path="{{ caddy_etc_dir }}/sites" state=directory group="{{ caddy_group }}" mode=0750
 
 - name: Ensure caddy ssl dir
-  file: path="{{ caddy_ssl_dir }}" state=directory owner="{{ caddy_user }}" group=root mode=0750
+  file: path="{{ caddy_ssl_dir }}" state=directory owner="{{ caddy_user }}" group="{{ caddy_group }}" mode=0750
 
 - name: Ensure site root
   file: path="{{ caddy_site_root }}" state=directory owner="{{ caddy_user }}" group="{{ caddy_group }}" mode=0750
   when: caddy_site_root
 
 - name: Ensure default empty site root
-  file: path="/var/empty" state=directory owner="{{ caddy_user }}" group="{{ caddy_group }}" mode=0750
+  file: path="/var/empty" state=directory owner="root" group="{{ caddy_group }}" mode=0750
 
 - name: Ensure site log dir
   file: path="{{ caddy_site_logdir }}" state=directory owner="{{ caddy_user }}" group="{{ caddy_group }}" mode=0750
 
 - name: Caddyfile
-  template: src=Caddyfile.j2 dest="{{ caddy_etc_dir }}/Caddyfile" group="{{ caddy_group }}" mode=0444
+  template: src=Caddyfile.j2 dest="{{ caddy_etc_dir }}/Caddyfile" group="{{ caddy_group }}" mode=0640
 
 - name: Caddy systemd file
   copy: >
