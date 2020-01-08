@@ -8,6 +8,6 @@ caddy_user: www-data
 caddy_group: www-data
 caddy_download_url: "https://github.com/caddyserver/caddy/releases/download/v{{ caddy_version }}/caddy_v{{ caddy_version }}_linux_amd64.tar.gz"
 caddy_site_domain: localhost
-caddy_site_root: null
-caddy_site_backend: null
+caddy_site_root: ~
+caddy_site_backend: ~
 caddy_site_logdir: "/var/log/caddy"

@@ -35,7 +35,7 @@
 
 - name: Ensure site root
   file: path="{{ caddy_site_root }}" state=directory owner="{{ caddy_user }}" group="{{ caddy_group }}" mode=0750
-  when: caddy_site_root
+  when: caddy_site_root is not none
 
 - name: Ensure default empty site root
   file: path="/var/empty" state=directory owner="root" group="{{ caddy_group }}" mode=0750
